@@ -48,4 +48,4 @@ unix: CONFIG += link_pkgconfig
 unix: PKGCONFIG += gstreamer-1.0 gstreamer-app-1.0 gstreamer-plugins-base-1.0 opencv jsoncpp
 
 DISTFILES += \
-    READNE.md
+    README.md
