@@ -9,7 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_capture = nullptr;
 
     ui->setupUi(this);
-    this->setWindowTitle("Camapp for Dahua Version 0.2.3");
+    this->setWindowTitle("Camapp for Dahua Version 0.2.2");
     ui->comboBox->setEnabled(true);
     ui->comboBox->addItem("Off");
     ui->comboBox->addItem("Once");
@@ -178,13 +178,14 @@ void MainWindow::paintEvent(QPaintEvent *paintEvent)
                 // RGB Mono,,,,,
                 if(m_capture->m_format=="rgb"){
                     color = cv::COLOR_RGB2BGR;
+                    color = cv::COLOR_GRAY2BGR;
+                }
                 }else if(m_capture->m_format=="UYVY"){
                     color = cv::COLOR_YUV2RGB_UYVY;
                 }else if (m_capture->m_format=="GRAY8"){
-                    color = cv::COLOR_GRAY2BGR;
-                }
             }
 //            qDebug() << "color: " << color;
+            try{
             cv::cvtColor(mat, mat, color);
             cv::resize(mat, mat,cv::Size(640, 480),0,0,cv::INTER_CUBIC);
 
@@ -192,6 +193,9 @@ void MainWindow::paintEvent(QPaintEvent *paintEvent)
             scene_.clear();
             scene_.addPixmap(QPixmap::fromImage(img));
             ui->graphicsView->update();
+            }catch(cv::Exception &e){
+                qDebug() << "exception: "<< e.what();
+            }
         }
     }
 }
@@ -365,7 +369,7 @@ void MainWindow::on_pushButton_5_clicked()
     props.insert(std::make_pair("offsetY", std::to_string(ui->spinBox_offsety->value())));
     props.insert(std::make_pair("format", ui->comboBox_3->currentText().toStdString()));
     props.insert(std::make_pair("autoWB", ui->comboBox->currentText().toStdString()));
-//    props.insert(std::make_pair("autoEp", std::to_string(ui->comboBox->currentText())));
+    props.insert(std::make_pair("autoExpo", ui->comboBox_2->currentText().toStdString()));
     p.setPropValues(props);
     p.save(savepath.toStdString());
 }
