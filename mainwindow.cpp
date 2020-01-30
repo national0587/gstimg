@@ -9,15 +9,15 @@ MainWindow::MainWindow(QWidget *parent) :
     m_capture = nullptr;
 
     ui->setupUi(this);
-    this->setWindowTitle("Camapp for Dahua Version 0.2.2");
+    this->setWindowTitle("CamApp for TOSHIBA Teli BU1203MC Version 0.0.1");
     ui->comboBox->setEnabled(true);
     ui->comboBox->addItem("Off");
     ui->comboBox->addItem("Once");
     ui->comboBox->addItem("Continuous");
-    ui->comboBox_2->setEnabled(true);
-    ui->comboBox_2->addItem("Off");
-    ui->comboBox_2->addItem("Once");
-    ui->comboBox_2->addItem("Continuous");
+//    ui->comboBox_2->setEnabled(true);
+//    ui->comboBox_2->addItem("Off");
+//    ui->comboBox_2->addItem("Once");
+//    ui->comboBox_2->addItem("Continuous");
 
 
 
@@ -41,9 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->horizontalSlider_gainRed->setMaximum(150);
     ui->horizontalSlider_gainRed->setMinimum(0);
     ui->horizontalSlider_gainRed->setSingleStep(1);
-    ui->horizontalSlider_gainGreen->setMaximum(150);
-    ui->horizontalSlider_gainGreen->setMinimum(0);
-    ui->horizontalSlider_gainGreen->setSingleStep(1);
+//    ui->horizontalSlider_gainGreen->setMaximum(150);
+//    ui->horizontalSlider_gainGreen->setMinimum(0);
+//    ui->horizontalSlider_gainGreen->setSingleStep(1);
     ui->horizontalSlider_gainBlue->setMaximum(150);
     ui->horizontalSlider_gainBlue->setMinimum(0);
     ui->horizontalSlider_gainBlue->setSingleStep(1);
@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     list_dspinbox << ui->SpinBox_gamma;
     list_dspinbox << ui->SpinBox_gainRaw;
     list_dspinbox << ui->SpinBox_gainRed;
-    list_dspinbox << ui->SpinBox_gainGreen;
+//    list_dspinbox << ui->SpinBox_gainGreen;
     list_dspinbox << ui->SpinBox_gainBlue;
 
 //    connect(ui->exposureSpinBox, SIGNAL(valueChanged(double)), ui->horizontalSlider_exposure, SLOT(setValue(int)));
@@ -80,7 +80,7 @@ MainWindow::MainWindow(QWidget *parent) :
     list_slider << ui->horizontalSlider_gamma;
     list_slider << ui->horizontalSlider_gainRaw;
     list_slider << ui->horizontalSlider_gainRed;
-    list_slider << ui->horizontalSlider_gainGreen;
+//    list_slider << ui->horizontalSlider_gainGreen;
     list_slider << ui->horizontalSlider_gainBlue;
 
     for(auto const &horizonalslidebar: list_slider){
@@ -110,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //                std::cout<< "debug   expo:" <<std::stod(props.at("exposure")) << std::endl;
                 ui->SpinBox_exposure->setValue(std::stod(props.at("exposure")));
                 ui->SpinBox_gainRed->setValue(std::stod(props.at("gainRed")));
-                ui->SpinBox_gainGreen->setValue(std::stod(props.at("gainGreen")));
+//                ui->SpinBox_gainGreen->setValue(std::stod(props.at("gainGreen")));
                 ui->SpinBox_gainBlue->setValue(std::stod(props.at("gainBlue")));
                 ui->SpinBox_gainRaw->setValue(std::stod(props.at("gainRaw")));
                 ui->SpinBox_gamma->setValue(std::stod(props.at("gamma")));
@@ -221,20 +221,20 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
         if(arg1=="Once" || arg1=="Continuous"){
             //do
             ui->horizontalSlider_gainRed->setEnabled(false);
-            ui->horizontalSlider_gainGreen->setEnabled(false);
+//            ui->horizontalSlider_gainGreen->setEnabled(false);
             ui->horizontalSlider_gainBlue->setEnabled(false);
 
             ui->SpinBox_gainRed->setEnabled(false);
-            ui->SpinBox_gainGreen->setEnabled(false);
+//            ui->SpinBox_gainGreen->setEnabled(false);
             ui->SpinBox_gainBlue->setEnabled(false);
         }else{
             //
             ui->horizontalSlider_gainRed->setEnabled(true);
-            ui->horizontalSlider_gainGreen->setEnabled(true);
+//            ui->horizontalSlider_gainGreen->setEnabled(true);
             ui->horizontalSlider_gainBlue->setEnabled(true);
 
             ui->SpinBox_gainRed->setEnabled(true);
-            ui->SpinBox_gainGreen->setEnabled(true);
+//            ui->SpinBox_gainGreen->setEnabled(true);
             ui->SpinBox_gainBlue->setEnabled(true);
         }
     }
@@ -360,7 +360,7 @@ void MainWindow::on_pushButton_5_clicked()
     props.insert(std::make_pair("exposure", std::to_string(ui->SpinBox_exposure->value())));
     props.insert(std::make_pair("gainRaw", std::to_string(ui->SpinBox_gainRaw->value())));
     props.insert(std::make_pair("gainRed", std::to_string(ui->SpinBox_gainRed->value())));
-    props.insert(std::make_pair("gainGreen", std::to_string(ui->SpinBox_gainGreen->value())));
+//    props.insert(std::make_pair("gainGreen", std::to_string(ui->SpinBox_gainGreen->value())));
     props.insert(std::make_pair("gainBlue", std::to_string(ui->SpinBox_gainBlue->value())));
     props.insert(std::make_pair("gamma", std::to_string(ui->SpinBox_gamma->value())));
     props.insert(std::make_pair("width", std::to_string(ui->spinBox_width->value())));
@@ -369,7 +369,7 @@ void MainWindow::on_pushButton_5_clicked()
     props.insert(std::make_pair("offsetY", std::to_string(ui->spinBox_offsety->value())));
     props.insert(std::make_pair("format", ui->comboBox_3->currentText().toStdString()));
     props.insert(std::make_pair("autoWB", ui->comboBox->currentText().toStdString()));
-    props.insert(std::make_pair("autoExpo", ui->comboBox_2->currentText().toStdString()));
+//    props.insert(std::make_pair("autoExpo", ui->comboBox_2->currentText().toStdString()));
     p.setPropValues(props);
     p.save(savepath.toStdString());
 }

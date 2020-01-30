@@ -81,10 +81,10 @@ int parser::setPropValues(std::map<std::string, std::string> &values) {
 
     root["file_type"] = "ttc_camera_plugin_setting";
     root["file_version"] = "1.0.0";
-    root["camera_info"]["name"] = "DH-MV-A5501CG20E";
+    root["camera_info"]["name"] = "BU1203MC";
     root["camera_info"]["ID"] = "0001";
-    root["plugin_info"]["name"] = "dahuasrc";
-    root["plugin_info"]["version"] = "1.0.0";
+    root["plugin_info"]["name"] = "telibu1203mcsrc";
+    root["plugin_info"]["version"] = "0.0.1";
 
     for(auto x: values){
         root["property_list"][x.first]["value"] = x.second;

@@ -14,7 +14,7 @@ capture::capture(QString config, QObject *parent) : QObject(parent), m_pipeline(
     GError* error = NULL;
     idxs=0;
     /*make elements*/
-    this->src = gst_element_factory_make("dahuasrc", "src");
+    this->src = gst_element_factory_make("telibu1203mcsrc", "src");
     //this->conv = gst_element_factory_make("bayer2rgb", "conv");
     this->sink = gst_element_factory_make("appsink", "sink");
 

@@ -43,22 +43,6 @@
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="4" column="2">
-        <widget class="QDoubleSpinBox" name="SpinBox_gainGreen">
-         <property name="decimals">
-          <number>2</number>
-         </property>
-         <property name="maximum">
-          <double>99999.990000000005239</double>
-         </property>
-         <property name="singleStep">
-          <double>0.010000000000000</double>
-         </property>
-         <property name="value">
-          <double>1.000000000000000</double>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="2">
         <widget class="QDoubleSpinBox" name="SpinBox_gainRaw">
          <property name="decimals">
@@ -79,16 +63,6 @@
         <widget class="QLabel" name="label_4">
          <property name="text">
           <string>exposure</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QSlider" name="horizontalSlider_gainGreen">
-         <property name="maximum">
-          <number>100</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
@@ -158,20 +132,13 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="4" column="1">
         <widget class="QSlider" name="horizontalSlider_gainBlue">
          <property name="maximum">
           <number>100</number>
          </property>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="label_9">
-         <property name="text">
-          <string>G</string>
          </property>
         </widget>
        </item>
@@ -211,7 +178,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="2">
+       <item row="4" column="2">
         <widget class="QDoubleSpinBox" name="SpinBox_gainBlue">
          <property name="decimals">
           <number>2</number>
@@ -227,7 +194,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="label_10">
          <property name="text">
           <string>B</string>
@@ -275,29 +242,6 @@
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QLabel" name="label_3">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>310</y>
-        <width>85</width>
-        <height>27</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Expo Auto</string>
-      </property>
-     </widget>
-     <widget class="QComboBox" name="comboBox_2">
-      <property name="geometry">
-       <rect>
-        <x>80</x>
-        <y>310</y>
-        <width>171</width>
-        <height>27</height>
-       </rect>
-      </property>
-     </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
@@ -339,8 +283,11 @@
          <property name="maximum">
           <number>999996</number>
          </property>
+         <property name="singleStep">
+          <number>8</number>
+         </property>
          <property name="value">
-          <number>2592</number>
+          <number>4000</number>
          </property>
         </widget>
        </item>
@@ -377,8 +324,11 @@
          <property name="maximum">
           <number>999999</number>
          </property>
+         <property name="singleStep">
+          <number>2</number>
+         </property>
          <property name="value">
-          <number>2048</number>
+          <number>3000</number>
          </property>
         </widget>
        </item>
@@ -393,7 +343,12 @@
         <widget class="QComboBox" name="comboBox_3">
          <item>
           <property name="text">
-           <string>BayerGB8</string>
+           <string>BayerGR8</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Mono8</string>
           </property>
          </item>
         </widget>
@@ -508,7 +463,7 @@
      <x>0</x>
      <y>0</y>
      <width>1032</width>
-     <height>25</height>
+     <height>28</height>
     </rect>
    </property>
   </widget>
