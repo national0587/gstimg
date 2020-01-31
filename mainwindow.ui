@@ -36,14 +36,14 @@
      <widget class="QWidget" name="gridLayoutWidget">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>10</x>
         <y>10</y>
         <width>341</width>
         <height>261</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
-       <item row="2" column="2">
+       <item row="2" column="3">
         <widget class="QDoubleSpinBox" name="SpinBox_gainRaw">
          <property name="decimals">
           <number>2</number>
@@ -66,7 +66,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
+       <item row="0" column="3">
         <widget class="QDoubleSpinBox" name="SpinBox_exposure">
          <property name="toolTipDuration">
           <number>0</number>
@@ -89,7 +89,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
+       <item row="3" column="2">
         <widget class="QSlider" name="horizontalSlider_gainRed">
          <property name="maximum">
           <number>100</number>
@@ -99,7 +99,7 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="2">
+       <item row="3" column="3">
         <widget class="QDoubleSpinBox" name="SpinBox_gainRed">
          <property name="decimals">
           <number>2</number>
@@ -122,7 +122,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="1" column="2">
         <widget class="QSlider" name="horizontalSlider_gamma">
          <property name="maximum">
           <number>100</number>
@@ -132,7 +132,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="4" column="2">
         <widget class="QSlider" name="horizontalSlider_gainBlue">
          <property name="maximum">
           <number>100</number>
@@ -142,7 +142,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
+       <item row="2" column="2">
         <widget class="QSlider" name="horizontalSlider_gainRaw">
          <property name="maximum">
           <number>100</number>
@@ -152,7 +152,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
+       <item row="1" column="3">
         <widget class="QDoubleSpinBox" name="SpinBox_gamma">
          <property name="enabled">
           <bool>true</bool>
@@ -178,7 +178,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="2">
+       <item row="4" column="3">
         <widget class="QDoubleSpinBox" name="SpinBox_gainBlue">
          <property name="decimals">
           <number>2</number>
@@ -201,7 +201,7 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="0" column="2">
         <widget class="QSlider" name="horizontalSlider_exposure">
          <property name="minimum">
           <number>1</number>

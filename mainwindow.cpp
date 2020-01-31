@@ -27,10 +27,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->pushButton_3->setVisible(false);
     ui->pushButton_4->setVisible(false);
 
-    ui->comboBox_3->setEnabled(false);
+    ui->comboBox_3->setEnabled(true);
 
-    ui->horizontalSlider_exposure->setMaximum(1000000);
-    ui->horizontalSlider_exposure->setMinimum(10);
+    ui->horizontalSlider_exposure->setMaximum(16000000);
+    ui->horizontalSlider_exposure->setMinimum(43);
     ui->horizontalSlider_exposure->setSingleStep(100);
     ui->horizontalSlider_gamma->setMaximum(400);
     ui->horizontalSlider_gamma->setMinimum(0);
