@@ -29,42 +29,48 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->comboBox_3->setEnabled(true);
 
-    ui->horizontalSlider_exposure->setMaximum(16000000);
-    ui->horizontalSlider_exposure->setMinimum(43);
-    ui->horizontalSlider_exposure->setSingleStep(100);
-    ui->horizontalSlider_gamma->setMaximum(400);
-    ui->horizontalSlider_gamma->setMinimum(0);
+    ui->horizontalSlider_exposure->setMaximum(EXPO_MAX);
+    ui->horizontalSlider_exposure->setMinimum(EXPO_MIN);
+    ui->horizontalSlider_exposure->setSingleStep(200);
+
+    ui->horizontalSlider_gamma->setRange((int)(GAMMA_MIN*100),(int)(GAMMA_MAX*100));
+//    ui->horizontalSlider_gamma->setMaximum(99);
+//    ui->horizontalSlider_gamma->setMinimum(0);
+    ui->horizontalSlider_gamma->setValue((int)(GAMMA_DEF * 100));
     ui->horizontalSlider_gamma->setSingleStep(1);
-    ui->horizontalSlider_gainRaw->setMaximum(320);
-    ui->horizontalSlider_gainRaw->setMinimum(10);
+
+    ui->horizontalSlider_gainRaw->setRange((int)(GAIN_MIN*100), (int)(GAIN_MAX*100));
     ui->horizontalSlider_gainRaw->setSingleStep(1);
-    ui->horizontalSlider_gainRed->setMaximum(150);
-    ui->horizontalSlider_gainRed->setMinimum(0);
+    ui->horizontalSlider_gainRaw->setValue((int)(GAIN_DEF*100));
+
+    ui->horizontalSlider_gainRed->setRange((int)(WBR_MIN*100), (int)(WBR_MAX*100));
     ui->horizontalSlider_gainRed->setSingleStep(1);
+    ui->horizontalSlider_gainRed->setValue((int)(WBR_DEF*100));
 //    ui->horizontalSlider_gainGreen->setMaximum(150);
 //    ui->horizontalSlider_gainGreen->setMinimum(0);
 //    ui->horizontalSlider_gainGreen->setSingleStep(1);
-    ui->horizontalSlider_gainBlue->setMaximum(150);
-    ui->horizontalSlider_gainBlue->setMinimum(0);
+
+    ui->horizontalSlider_gainBlue->setRange((int)(WBB_MIN*100), (int)(WBB_MAX*100));
+    ui->horizontalSlider_gainBlue->setValue((int)(WBB_DEF*100));
     ui->horizontalSlider_gainBlue->setSingleStep(1);
 
-    ui->spinBox_width->setSingleStep(16);
+    ui->spinBox_width->setSingleStep(8);
     ui->spinBox_width->setMinimum(0);
-    ui->spinBox_height->setSingleStep(16);
+    ui->spinBox_height->setSingleStep(2);
     ui->spinBox_height->setMinimum(0);
 
-    ui->spinBox_offsetx->setSingleStep(16);
+//    ui->spinBox_offsetx->setSingleStep(1);
     ui->spinBox_offsetx->setMinimum(0);
     ui->spinBox_offsety->setSingleStep(16);
     ui->spinBox_offsety->setMinimum(0);
     /*DoubleSpinBox*/
 
-    list_dspinbox << ui->SpinBox_exposure;
-    list_dspinbox << ui->SpinBox_gamma;
-    list_dspinbox << ui->SpinBox_gainRaw;
-    list_dspinbox << ui->SpinBox_gainRed;
-//    list_dspinbox << ui->SpinBox_gainGreen;
-    list_dspinbox << ui->SpinBox_gainBlue;
+//    list_dspinbox << ui->SpinBox_exposure;
+//    list_dspinbox << ui->SpinBox_gamma;
+//    list_dspinbox << ui->SpinBox_gainRaw;
+//    list_dspinbox << ui->SpinBox_gainRed;
+////    list_dspinbox << ui->SpinBox_gainGreen;
+//    list_dspinbox << ui->SpinBox_gainBlue;
 
 //    connect(ui->exposureSpinBox, SIGNAL(valueChanged(double)), ui->horizontalSlider_exposure, SLOT(setValue(int)));
 //    connect(ui->horizontalSlider_exposure, SIGNAL(valueChanged(int)), ui->exposureSpinBox, SLOT(setValue(double)));
@@ -82,9 +88,10 @@ MainWindow::MainWindow(QWidget *parent) :
     list_slider << ui->horizontalSlider_gainRed;
 //    list_slider << ui->horizontalSlider_gainGreen;
     list_slider << ui->horizontalSlider_gainBlue;
-
+    QDoubleValidator *doubleValidator;
+    ui->lineEdit_exposure->setValidator(doubleValidator);
     for(auto const &horizonalslidebar: list_slider){
-        connect(horizonalslidebar, &QSlider::actionTriggered, this, &MainWindow::slidebar_event);
+        connect(horizonalslidebar, &QSlider::valueChanged, this, &MainWindow::slidebar_event);
 
     }
 
@@ -108,12 +115,12 @@ MainWindow::MainWindow(QWidget *parent) :
                 std::map<std::string, std::string> props;
                 p.getPropValues(props);
 //                std::cout<< "debug   expo:" <<std::stod(props.at("exposure")) << std::endl;
-                ui->SpinBox_exposure->setValue(std::stod(props.at("exposure")));
-                ui->SpinBox_gainRed->setValue(std::stod(props.at("gainRed")));
-//                ui->SpinBox_gainGreen->setValue(std::stod(props.at("gainGreen")));
-                ui->SpinBox_gainBlue->setValue(std::stod(props.at("gainBlue")));
-                ui->SpinBox_gainRaw->setValue(std::stod(props.at("gainRaw")));
-                ui->SpinBox_gamma->setValue(std::stod(props.at("gamma")));
+//                ui->SpinBox_exposure->setValue(std::stod(props.at("exposure")));
+//                ui->SpinBox_gainRed->setValue(std::stod(props.at("gainRed")));
+////                ui->SpinBox_gainGreen->setValue(std::stod(props.at("gainGreen")));
+//                ui->SpinBox_gainBlue->setValue(std::stod(props.at("gainBlue")));
+//                ui->SpinBox_gainRaw->setValue(std::stod(props.at("gainRaw")));
+//                ui->SpinBox_gamma->setValue(std::stod(props.at("gamma")));
 
                 int idx = ui->comboBox_3->findText(QString::fromStdString(props.at("format")));
                 if (idx == -1){
@@ -224,18 +231,18 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
 //            ui->horizontalSlider_gainGreen->setEnabled(false);
             ui->horizontalSlider_gainBlue->setEnabled(false);
 
-            ui->SpinBox_gainRed->setEnabled(false);
+//            ui->SpinBox_gainRed->setEnabled(false);
 //            ui->SpinBox_gainGreen->setEnabled(false);
-            ui->SpinBox_gainBlue->setEnabled(false);
+//            ui->SpinBox_gainBlue->setEnabled(false);
         }else{
             //
             ui->horizontalSlider_gainRed->setEnabled(true);
 //            ui->horizontalSlider_gainGreen->setEnabled(true);
             ui->horizontalSlider_gainBlue->setEnabled(true);
 
-            ui->SpinBox_gainRed->setEnabled(true);
+//            ui->SpinBox_gainRed->setEnabled(true);
 //            ui->SpinBox_gainGreen->setEnabled(true);
-            ui->SpinBox_gainBlue->setEnabled(true);
+//            ui->SpinBox_gainBlue->setEnabled(true);
         }
     }
 }
@@ -247,10 +254,10 @@ void MainWindow::on_comboBox_2_currentIndexChanged(const QString &arg1)
 
         if(arg1=="Once" || arg1=="Continuous"){
             ui->horizontalSlider_exposure->setEnabled(false);
-            ui->SpinBox_exposure->setEnabled(false);
+//            ui->SpinBox_exposure->setEnabled(false);
         }else{
             ui->horizontalSlider_exposure->setEnabled(true);
-            ui->SpinBox_exposure->setEnabled(true);
+//            ui->SpinBox_exposure->setEnabled(true);
         }
     }
 }
@@ -304,7 +311,7 @@ void MainWindow::slidebar_event()
     QSlider * slidar = qobject_cast<QSlider*>(sender());
 
     QString controlName = slidar->objectName().split("_").last();
-    qDebug() << controlName << " " << slidar->value();
+    qDebug() << controlName << " -" << slidar->value();
     for(auto dspinbox: list_dspinbox){
         qDebug() << controlName << "-> "<< dspinbox->objectName()<< ": " << slidar->value();
         if(QString::compare(dspinbox->objectName().split("_").last(), controlName, Qt::CaseSensitive)==0){
@@ -357,12 +364,12 @@ void MainWindow::on_pushButton_5_clicked()
 
     }
     std::map<std::string, std::string> props;
-    props.insert(std::make_pair("exposure", std::to_string(ui->SpinBox_exposure->value())));
-    props.insert(std::make_pair("gainRaw", std::to_string(ui->SpinBox_gainRaw->value())));
-    props.insert(std::make_pair("gainRed", std::to_string(ui->SpinBox_gainRed->value())));
+//    props.insert(std::make_pair("exposure", std::to_string(ui->SpinBox_exposure->value())));
+//    props.insert(std::make_pair("gainRaw", std::to_string(ui->SpinBox_gainRaw->value())));
+//    props.insert(std::make_pair("gainRed", std::to_string(ui->SpinBox_gainRed->value())));
 //    props.insert(std::make_pair("gainGreen", std::to_string(ui->SpinBox_gainGreen->value())));
-    props.insert(std::make_pair("gainBlue", std::to_string(ui->SpinBox_gainBlue->value())));
-    props.insert(std::make_pair("gamma", std::to_string(ui->SpinBox_gamma->value())));
+//    props.insert(std::make_pair("gainBlue", std::to_string(ui->SpinBox_gainBlue->value())));
+//    props.insert(std::make_pair("gamma", std::to_string(ui->SpinBox_gamma->value())));
     props.insert(std::make_pair("width", std::to_string(ui->spinBox_width->value())));
     props.insert(std::make_pair("height", std::to_string(ui->spinBox_height->value())));
     props.insert(std::make_pair("offsetX", std::to_string(ui->spinBox_offsetx->value())));
