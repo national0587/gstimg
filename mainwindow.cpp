@@ -19,7 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
 //    ui->comboBox_2->addItem("Once");
 //    ui->comboBox_2->addItem("Continuous");
 
-
+    ui->spinBox_width->setMaximum(4000);
+    ui->spinBox_height->setMaximum(3000);
+    ui->spinBox_offsetx->setMaximum(4000);
+    ui->spinBox_offsety->setMaximum(3000);
 
     ui->graphicsView->setScene(&scene_);
     //pause playing null...
@@ -171,7 +174,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(timer, SIGNAL(timeout()), this, SLOT(updateImage()));
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::close);
+
+    // get camera prop(const)
     getPropValueInt();
+    QString str;
+    m_capture->get_stringproperty("format", str);
+    ui->comboBox->setCurrentText(str);
+
 }
 
 MainWindow::~MainWindow()

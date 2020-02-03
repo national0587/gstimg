@@ -94,17 +94,20 @@ void capture::change_property(QString prop, float num)
     }
 }
 
-QString capture::get_stringproperty(QString prop, QString &value)
+void capture::get_stringproperty(QString prop, QString &value)
 {
     if(m_pipeline != nullptr){
         QByteArray str_arr = prop.toLocal8Bit();
         const char* pChar = str_arr.constData();
-        g_object_get(G_OBJECT(src), pChar, &value, NULL);
+        char *temp_char;
+        g_object_get(G_OBJECT(src), pChar, &temp_char, NULL);
+        QTextCodec* tc = QTextCodec::codecForLocale();
+        value = QString(tc->toUnicode(temp_char));
     }
 
 }
 
-int capture::get_intproperty(QString prop, int &value)
+void capture::get_intproperty(QString prop, int &value)
 {
     if(m_pipeline != nullptr){
         QByteArray str_arr = prop.toLocal8Bit();
@@ -150,18 +153,14 @@ GstFlowReturn capture::newSample(GstAppSink *sink, gpointer gSelf)
 
     GstCaps *caps = gst_sample_get_caps(sample);
     GstStructure *structure = gst_caps_get_structure(caps, 0);
-//    QString pixelarray = gst_structure_get_name(structure);
-//    QString format = gst_structure_get_string(structure, "format");
 
     self->m_MediaType = gst_structure_get_name(structure);
     self->m_format = gst_structure_get_string(structure, "format");
-//    qDebug() << "structure " <<  pixelarray;
-//    qDebug() << "format" << format;
+
     int width, height;
     gst_structure_get_int(structure, "width", &width);
     gst_structure_get_int(structure, "height", &height);
-//    qDebug() << "width" << width;
-//    qDebug() << "height" << height;
+
 
 //  Bayer is WxHx1channel
     cv::Mat recv_data = cv::Mat(height, width, CV_8UC1);
@@ -186,20 +185,6 @@ GstFlowReturn capture::newSample(GstAppSink *sink, gpointer gSelf)
                 self->m_imFlag=0;
                 }
 
-//              cv::cvtColor(recv_data, recv_data, color);
-//              cv::resize(recv_data, recv_data,cv::Size(640, 480),0,0,cv::INTER_CUBIC);
-//              if (self->m_imFlag==0){
-
-//              self->m_image = QImage(recv_data.data, 640, 480, QImage::Format_RGB888);
-//              //qDebug()<<self->m_imFlag;
-//              self->m_imFlag=1;
-
-//              }else{
-//              self->m_image2 = QImage(recv_data.data, 640, 480, QImage::Format_RGB888);
-//              //qDebug()<<self->m_imFlag;
-//              self->m_imFlag=0;
-//              }
-
               gst_buffer_unmap(sampleBuffer, &bufferInfo);
 
               //QString str = QString("%1.png").arg(idxs);
@@ -213,16 +198,7 @@ GstFlowReturn capture::newSample(GstAppSink *sink, gpointer gSelf)
          gst_sample_unref(sample);
 
       }
-//        clock_gettime(CLOCK_REALTIME, &endTime);
-//        if (endTime.tv_nsec < startTime.tv_nsec) {
-//            qInfo("%10ld.%09ld", endTime.tv_sec - startTime.tv_sec - 1
-//                    ,endTime.tv_nsec + 1000000000 - startTime.tv_nsec);
-//        } else {
-//            qInfo("%10ld.%09ld", endTime.tv_sec - startTime.tv_sec
-//                    ,endTime.tv_nsec - startTime.tv_nsec);
-//        }
-//        g_print("\n");
-//        startTime=endTime;
+
     ok=1;
     return GST_FLOW_OK;
 }
@@ -238,13 +214,3 @@ void capture::setStatePlaying(){
 void capture::setStateReady(){
     gst_element_set_state(m_pipeline, GST_STATE_NULL);
 }
-//void capture::oneShot(){
-//    gst_element_set_state(m_pipeline, GST_STATE_PLAYING);
-//    while(1){
-//        if(ok==1){
-//            ok=0;
-//            gst_element_set_state(m_pipeline, GST_STATE_PAUSED);
-//            break;
-//        }
-//    }
-//}

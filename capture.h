@@ -6,6 +6,7 @@
 #include <QObject>
 #include <QImage>
 #include <QMutex>
+#include <QTextCodec>
 #include <opencv2/opencv.hpp>
 
 //for tictoc
@@ -21,8 +22,8 @@ public:
     cv::Mat getFrame();
     void change_property(int i, QString str);
     void change_property(QString prop, float num);
-    QString get_stringproperty(QString prop, QString &value);
-    int get_intproperty(QString prop, int &value);
+    void get_stringproperty(QString prop, QString &value);
+    void get_intproperty(QString prop, int &value);
     void get_floatproperty(QString prop, float &value);
     void event_bringup();
     void setStatePlaying();
