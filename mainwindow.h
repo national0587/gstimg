@@ -15,7 +15,7 @@
 #include "parser.h"
 
 #define EXPO_MIN 42
-#define EXPO_MAX 16000000
+#define EXPO_MAX 1000000
 #define EXPO_DEF 33000
 
 #define GAMMA_MIN 0.45
@@ -28,11 +28,11 @@
 
 #define WBR_MIN 1.00
 #define WBR_MAX 8.00
-#define WBR_DEF 1.66
+#define WBR_DEF 1.855
 
 #define WBB_MIN 1.00
 #define WBB_MAX 8.00
-#define WBB_DEF 1.89
+#define WBB_DEF 2.633
 
 
 
@@ -68,6 +68,9 @@ private slots:
     void on_pushButton_4_clicked();
 
     void on_pushButton_5_clicked();
+    void getPropValueFloat();
+    void getPropValueInt();
+
 
 private:
     Ui::MainWindow *ui;
@@ -77,7 +80,7 @@ private:
      parser p;
      QGraphicsScene scene_;
      QTimer *timer;
-     QList<QDoubleSpinBox *> list_dspinbox;
+     QList<QLineEdit *> list_lineedit;
      QList<QSlider *> list_slider;
 
 

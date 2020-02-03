@@ -176,7 +176,7 @@
               </widget>
              </item>
              <item row="2" column="3">
-              <widget class="QLineEdit" name="lineEdit_gain">
+              <widget class="QLineEdit" name="lineEdit_gainRaw">
                <property name="maximumSize">
                 <size>
                  <width>80</width>
@@ -200,7 +200,7 @@
                 </size>
                </property>
                <property name="text">
-                <string>16000000</string>
+                <string>10000000</string>
                </property>
                <property name="maxLength">
                 <number>8</number>

@@ -23,7 +23,7 @@ public:
     void change_property(QString prop, float num);
     QString get_stringproperty(QString prop, QString &value);
     int get_intproperty(QString prop, int &value);
-    float get_floatproperty(QString prop, float &value);
+    void get_floatproperty(QString prop, float &value);
     void event_bringup();
     void setStatePlaying();
     void setStatePause();

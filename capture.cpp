@@ -86,63 +86,56 @@ void capture::change_property(int i, QString str)
 
 void capture::change_property(QString prop, float num)
 {
-    // QString to char*
-    QByteArray str_arr = prop.toLocal8Bit();
-    const char* pChar = str_arr.constData();
-    g_object_set(G_OBJECT(src), pChar, num, NULL);
-
+    if(m_pipeline != nullptr){
+        // QString to char*
+        QByteArray str_arr = prop.toLocal8Bit();
+        const char* pChar = str_arr.constData();
+        g_object_set(G_OBJECT(src), pChar, num, NULL);
+    }
 }
 
 QString capture::get_stringproperty(QString prop, QString &value)
 {
-    char *prop_c = new char[prop.size()+1];
-    std::strcpy(prop_c, prop.toUtf8().data() );
+    if(m_pipeline != nullptr){
+        QByteArray str_arr = prop.toLocal8Bit();
+        const char* pChar = str_arr.constData();
+        g_object_get(G_OBJECT(src), pChar, &value, NULL);
+    }
 
-//        config_c = config.toUtf8().data();
-
-    delete[] prop_c;
-
-    //g_object_get(G_OBJECT(src), prop, )
 }
 
 int capture::get_intproperty(QString prop, int &value)
 {
-    int val;
-    char *prop_c = new char[prop.size()+1];
-    std::strcpy(prop_c, prop.toUtf8().data() );
-
-//        config_c = config.toUtf8().data();
-    g_object_get(G_OBJECT(src), prop_c, &value);
-    delete[] prop_c;
-
-
-
+    if(m_pipeline != nullptr){
+        QByteArray str_arr = prop.toLocal8Bit();
+        const char* pChar = str_arr.constData();
+        g_object_get(G_OBJECT(src), pChar, &value, NULL);
+    }
 }
 
-float capture::get_floatproperty(QString prop, float &value)
+void capture::get_floatproperty(QString prop, float &value)
 {
-    float val;
-    //char *prop_c = new char[prop.size()+1];
-    //std::strcpy(prop_c, prop.toUtf8().data() );
-
-//        config_c = config.toUtf8().data();
-    g_object_get(G_OBJECT(src), "exposure", &val);
-   // delete[] prop_c;
-    return val;
+    if(m_pipeline != nullptr){
+        QByteArray str_arr = prop.toLocal8Bit();
+        const char* pChar = str_arr.constData();
+        g_object_get(G_OBJECT(src), pChar, &value, NULL);
+    }
 }
 
 void capture::event_bringup()
 {
-    GstStructure * structure = gst_structure_new("hoge", "type", G_TYPE_INT, 1, NULL);
-    event = gst_event_new_custom(GST_EVENT_CUSTOM_UPSTREAM, structure);
-    if(gst_element_send_event(m_pipeline, event)==FALSE){
-        //g_print("event send error\n");
-    }else{
-        //g_print("event send success\n");
-    }
+    if(m_pipeline != nullptr){
+        GstStructure * structure = gst_structure_new("hoge", "type", G_TYPE_INT, 1, NULL);
+        event = gst_event_new_custom(GST_EVENT_CUSTOM_UPSTREAM, structure);
+        if(gst_element_send_event(m_pipeline, event)==FALSE){
+            //g_print("event send error\n");
+        }else{
+            //g_print("event send success\n");
+        }
 
-    GstQuery * query = gst_query_new_custom(GST_QUERY_CUSTOM, structure);
-    gst_element_query(m_pipeline, query);
+        GstQuery * query = gst_query_new_custom(GST_QUERY_CUSTOM, structure);
+        gst_element_query(m_pipeline, query);
+    }
 }
 GstFlowReturn capture::newSample(GstAppSink *sink, gpointer gSelf)
 {
@@ -183,6 +176,8 @@ GstFlowReturn capture::newSample(GstAppSink *sink, gpointer gSelf)
 
               recv_data.data = bufferInfo.data;
               if (self->m_imFlag==0){
+
+//                qDebug() << QString::asprintf(%f).arg()
                 self->m_cv1 = recv_data.clone();
 
                 self->m_imFlag=1;
