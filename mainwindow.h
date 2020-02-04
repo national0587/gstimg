@@ -12,6 +12,7 @@
 #include <QDoubleSpinBox>
 #include <QSlider>
 #include <QValidator>
+#include <QMessageBox>
 #include "parser.h"
 
 #define EXPO_MIN 42
@@ -51,7 +52,6 @@ protected:
     void paintEvent(QPaintEvent* paintEvent);
 
 private slots:
-    void updateImage();
     void on_comboBox_currentIndexChanged(const QString &arg1);
 
     void on_comboBox_2_currentIndexChanged(const QString &arg1);
@@ -60,16 +60,13 @@ private slots:
     void slidebar_event();
 
     void on_pushButton_clicked();
-
     void on_pushButton_2_clicked();
-
     void on_pushButton_3_clicked();
-
     void on_pushButton_4_clicked();
-
     void on_pushButton_5_clicked();
     void getPropValueFloat();
     void getPropValueInt();
+    void updateImage();
 
 
 private:

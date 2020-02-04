@@ -29,6 +29,8 @@ public:
     void setStatePlaying();
     void setStatePause();
     void setStateReady();
+    int checkStatus();
+
 //    void oneShot();
     QString m_MediaType;
     QString m_format;

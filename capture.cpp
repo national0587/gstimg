@@ -214,3 +214,13 @@ void capture::setStatePlaying(){
 void capture::setStateReady(){
     gst_element_set_state(m_pipeline, GST_STATE_NULL);
 }
+
+int capture::checkStatus(){
+    GstState state, pending;
+    gst_element_get_state(m_pipeline, &state, &pending, GST_CLOCK_TIME_NONE);
+    if(state == GST_STATE_PLAYING){
+        return true;
+    }else{
+        return false;
+    }
+}

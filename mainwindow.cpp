@@ -13,11 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboBox->setEnabled(true);
     ui->comboBox->addItem("Off");
     ui->comboBox->addItem("Once");
-//    ui->comboBox->addItem("Continuous");
-//    ui->comboBox_2->setEnabled(true);
-//    ui->comboBox_2->addItem("Off");
-//    ui->comboBox_2->addItem("Once");
-//    ui->comboBox_2->addItem("Continuous");
+    ui->radioButton_scale->setChecked(true);
+
 
     ui->spinBox_width->setMaximum(4000);
     ui->spinBox_height->setMaximum(3000);
@@ -25,10 +22,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->spinBox_offsety->setMaximum(3000);
 
     ui->graphicsView->setScene(&scene_);
-    //pause playing null...
-    ui->pushButton_2->setVisible(false);
-    ui->pushButton_3->setVisible(false);
-    ui->pushButton_4->setVisible(false);
 
     ui->comboBox_3->setEnabled(true);
 
@@ -84,8 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
     list_lineedit << ui->lineEdit_gainRed;
     list_lineedit << ui->lineEdit_gainBlue;
 
-//    connect(ui->exposureSpinBox, SIGNAL(valueChanged(double)), ui->horizontalSlider_exposure, SLOT(setValue(int)));
-//    connect(ui->horizontalSlider_exposure, SIGNAL(valueChanged(int)), ui->exposureSpinBox, SLOT(setValue(double)));
+
     for(auto const &lineedit : list_lineedit)
     {
         QDoubleValidator *doubleValidator = new QDoubleValidator();
@@ -93,8 +85,6 @@ MainWindow::MainWindow(QWidget *parent) :
         lineedit->setValidator(doubleValidator);
         connect(lineedit, &QLineEdit::textChanged, this, &MainWindow::doubleSetProperty);
 
-//         connect(lineedit, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, static_cast<void (MainWindow::*)(void)>(&MainWindow::doubleSetProperty));
-         //    connect(ui->doubleSpinBox, &QAbstractSpinBox::editingFinished, [=] {qDebug("hoge");});
     }
 
 
@@ -109,10 +99,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     for(auto const &horizonalslidebar: list_slider){
         connect(horizonalslidebar, &QSlider::valueChanged, this, &MainWindow::slidebar_event);
-
     }
-
-
 
     savepath = "";
     QStringList argv = QCoreApplication::arguments();
@@ -145,7 +132,6 @@ MainWindow::MainWindow(QWidget *parent) :
                 }else{
                     ui->comboBox_3->setCurrentIndex(idx);
                 }
-
                 ui->spinBox_width->setValue(std::stoi(props.at("width")));
                 ui->spinBox_height->setValue(std::stoi(props.at("height")));
                 ui->spinBox_offsetx->setValue(std::stoi(props.at("offsetX")));
@@ -158,21 +144,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     m_capture = new capture(savepath, this);
 
-
-    timer = new QTimer();
-    timer->setSingleShot(false);
-    timer->setInterval(1000);
-    timer->setTimerType(Qt::PreciseTimer);
-    timer->start();
-
-//    QTimer *updateTimer = new QTimer();
-//    updateTimer->setSingleShot(false);
-//    updateTimer->setInterval(1000);
-//    updateTimer->start();
-
-//    connect(updateTimer, &QTimer::timeout, this, &MainWindow::getPropValueFloat);
-
-    connect(timer, SIGNAL(timeout()), this, SLOT(updateImage()));
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::close);
 
     // get camera prop(const)
@@ -180,6 +151,19 @@ MainWindow::MainWindow(QWidget *parent) :
     QString str;
     m_capture->get_stringproperty("format", str);
     ui->comboBox->setCurrentText(str);
+
+    QTimer *tm = new QTimer();
+    tm->setInterval(100);
+    tm->setSingleShot(false);
+    tm->start();
+    connect(tm, &QTimer::timeout, this, &MainWindow::updateImage);
+
+    QTimer::singleShot(1000, this, [=](){if(m_capture->checkStatus()==false){
+            QMessageBox msgBox(this);
+            msgBox.setText("could not connect camera!");
+            msgBox.exec();
+        }});
+
 
 }
 
@@ -190,65 +174,9 @@ MainWindow::~MainWindow()
 
 void MainWindow::paintEvent(QPaintEvent *paintEvent)
 {
-    if (m_capture!=nullptr){
-       cv::Mat mat;
-       cv::Mat recv;
-       recv = m_capture->getFrame();
-//       qDebug() <<  "mat size:" << recv.size().area();
-        if((!recv.empty()) && recv.size().area()>0){
-            recv.copyTo(mat);
-
-            int color;
-            if (m_capture->m_MediaType=="video/x-bayer"){
-                if(m_capture->m_format=="rggb"){
-                    color = cv::COLOR_BayerRG2BGR;
-                }else if(m_capture->m_format=="gbrg"){
-                    color = cv::COLOR_BayerGB2BGR;
-
-                }else if(m_capture->m_format=="grbg"){
-                    color = cv::COLOR_BayerGR2BGR;
-                }else{
-                    // bggr2BGR
-                    color = cv::COLOR_BayerBG2BGR;
-                }
-            }else if(m_capture->m_format=="video/x-raw"){
-                // RGB Mono,,,,,
-                if(m_capture->m_format=="rgb"){
-                    color = cv::COLOR_RGB2BGR;
-                    color = cv::COLOR_GRAY2BGR;
-                }
-                }else if(m_capture->m_format=="UYVY"){
-                    color = cv::COLOR_YUV2RGB_UYVY;
-                }else if (m_capture->m_format=="GRAY8"){
-            }
-//            qDebug() << "color: " << color;
-            try{
-            cv::cvtColor(mat, mat, color);
-            cv::resize(mat, mat,cv::Size(640, 480),0,0,cv::INTER_CUBIC);
-
-            QImage img = QImage(mat.data, 640, 480, QImage::Format_RGB888);
-            scene_.clear();
-            scene_.addPixmap(QPixmap::fromImage(img));
-            ui->graphicsView->update();
-            }catch(cv::Exception &e){
-                qDebug() << "exception: "<< e.what();
-            }
-        }
-    }
-}
-
-void MainWindow::updateImage()
-{
-        //qDebug()<<"call";
-    if(m_capture!=nullptr){
-        // double propertt
-        float temp;
-        //m_capture->get_floatproperty("exposure", temp);
-
-    }
-
 
 }
+
 
 void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
 {
@@ -306,6 +234,8 @@ void MainWindow::doubleSetProperty()
 //    QDoubleSpinBox *spinbox = qobject_cast<QDoubleSpinBox*>(sender());
     QLineEdit *lineEdit = qobject_cast<QLineEdit*>(sender());
 
+    if(m_capture!=nullptr){
+
     if (lineEdit!=NULL){
         qDebug() << QString("%1: %2").arg(lineEdit->objectName()).arg(lineEdit->text());
     }
@@ -361,7 +291,7 @@ void MainWindow::doubleSetProperty()
 //        }
 //        ui->horizontalSlider_exposure->setValue(spinbox->value());
 //    }
-
+}
 }
 
 void MainWindow::slidebar_event()
@@ -419,7 +349,7 @@ void MainWindow::on_pushButton_5_clicked()
 //    const QPixmap pixmap = ui->graphicsView->grab();
 //    pixmap.save("out.png");
     if (savepath==""){
-        savepath = QFileDialog::getSaveFileName(this, tr("save path"), QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+        savepath = QFileDialog::getSaveFileName(this, tr("save path"), "");
     }else{
 
     }
@@ -478,4 +408,65 @@ void MainWindow::getPropValueInt()
 
     m_capture->get_intproperty("offsetY", value);
     ui->spinBox_offsety->setValue(value);
+}
+
+void MainWindow::updateImage()
+{
+    if (m_capture!=nullptr){
+//    if(false){
+       cv::Mat mat;
+       cv::Mat recv;
+       recv = m_capture->getFrame();
+//       qDebug() <<  "mat size:" << recv.size().area();
+        if((!recv.empty()) && recv.size().area()>0){
+            recv.copyTo(mat);
+
+            int color;
+            if (m_capture->m_MediaType=="video/x-bayer"){
+                if(m_capture->m_format=="rggb"){
+                    color = cv::COLOR_BayerRG2BGR;
+                }else if(m_capture->m_format=="gbrg"){
+                    color = cv::COLOR_BayerGB2BGR;
+
+                }else if(m_capture->m_format=="grbg"){
+                    color = cv::COLOR_BayerGR2BGR;
+                }else{
+                    // bggr2BGR
+                    color = cv::COLOR_BayerBG2BGR;
+                }
+            }else if(m_capture->m_format=="video/x-raw"){
+                // RGB Mono,,,,,
+                if(m_capture->m_format=="rgb"){
+                    color = cv::COLOR_RGB2BGR;
+                    color = cv::COLOR_GRAY2BGR;
+                }
+                }else if(m_capture->m_format=="UYVY"){
+                    color = cv::COLOR_YUV2RGB_UYVY;
+                }else if (m_capture->m_format=="GRAY8"){
+            }
+//            qDebug() << "color: " << color;
+            try{
+            cv::cvtColor(mat, mat, color);
+            QImage img;
+
+            if(ui->radioButton_scale->isChecked()){
+                cv::resize(mat, mat,cv::Size(640, 480),0,0,cv::INTER_CUBIC);
+                img = QImage(mat.data, 640, 480, QImage::Format_RGB888);
+                scene_.setSceneRect(0,0,640,480);
+                ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+                ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+            }else{
+                img = QImage(mat.data, mat.cols, mat.rows, QImage::Format_RGB888);
+                scene_.setSceneRect(0,0,mat.cols, mat.rows);
+                ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+                ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+            }
+            scene_.clear();
+            scene_.addPixmap(QPixmap::fromImage(img));
+            ui->graphicsView->update();
+            }catch(cv::Exception &e){
+                qDebug() << "exception: "<< e.what();
+            }
+        }
+    }
 }
