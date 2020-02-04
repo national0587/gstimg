@@ -17,6 +17,7 @@ public:
     int getPropValues(std::map<std::string, std::string> &values);
     int setPropValue(std::string prop, std::string value);
     int setPropValues(std::map<std::string, std::string> &values);
+    int setCameraInfo(std::map<std::string, std::string> &value);
     int newTree();
 private:
     Json::Value root;

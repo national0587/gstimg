@@ -79,24 +79,38 @@ int parser::setPropValues(std::map<std::string, std::string> &values) {
 //    Json::Value root;
     root.clear();
 
-    root["file_type"] = "ttc_camera_plugin_setting";
-    root["file_version"] = "1.0.0";
-    root["camera_info"]["name"] = "BU1203MC";
-    root["camera_info"]["ID"] = "0001";
-    root["plugin_info"]["name"] = "telibu1203mcsrc";
-    root["plugin_info"]["version"] = "0.0.1";
+//    root["file_type"] = "ttc_camera_plugin_setting";
+//    root["file_version"] = "1.0.0";
+//    root["camera_info"]["model"] = "BU1203MC";
+////    root["camera_info"]["SerialNo"] = "0001";
+//    root["camera_info"]["manufacture"] = "Toshiba-Teli";
+//    root["plugin_info"]["name"] = "telibu1203mcsrc";
+//    root["plugin_info"]["version"] = "0.0.1";
 
     for(auto x: values){
         root["property_list"][x.first]["value"] = x.second;
 //        std::cout << x.first << std::endl;
     }
-    std::cout << root << std::endl;
+
     return 0;
+}
+
+int parser::setCameraInfo(std::map<std::string, std::string> &value){
+//    root.clear();
+
+    root["file_type"] = "ttc_camera_plugin_setting";
+    root["file_version"] = "1.0.0";
+    root["camera_info"]["model"] = "BU1203MC";
+//    root["camera_info"]["SerialNo"] = "0001";
+    root["camera_info"]["serialNo"] = value["serialNo"];
+    root["camera_info"]["manufacturer"] = "Toshiba-Teli";
+    root["plugin_info"]["name"] = "telibu1203mcsrc";
+    root["plugin_info"]["version"] = "0.0.1";
 }
 
 int parser::save(const std::string path) {
     std::ofstream jsonfile(path, std::ofstream::out);
-
+    std::cout << root << std::endl;
     Json::StyledWriter styledWriter;
     jsonfile << styledWriter.write(root) ;
     jsonfile.close();

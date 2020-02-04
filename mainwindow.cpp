@@ -348,27 +348,34 @@ void MainWindow::on_pushButton_5_clicked()
 {
 //    const QPixmap pixmap = ui->graphicsView->grab();
 //    pixmap.save("out.png");
-    if (savepath==""){
-        savepath = QFileDialog::getSaveFileName(this, tr("save path"), "");
-    }else{
+        if(m_capture!=nullptr){
+        if (savepath==""){
+            savepath = QFileDialog::getSaveFileName(this, tr("save path"), "");
+        }else{
 
+        }
+            std::map<std::string, std::string> props;
+            props.insert(std::make_pair("exposure", ui->lineEdit_exposure->text().toStdString()));
+            props.insert(std::make_pair("gainRaw", ui->lineEdit_gainRaw->text().toStdString()));
+            props.insert(std::make_pair("gainRed", ui->lineEdit_gainRed->text().toStdString()));
+        //    props.insert(std::make_pair("gainGreen", std::to_string(ui->SpinBox_gainGreen->value())));
+            props.insert(std::make_pair("gainBlue", ui->lineEdit_gainBlue->text().toStdString()));
+            props.insert(std::make_pair("gamma", ui->lineEdit_gamma->text().toStdString()));
+            props.insert(std::make_pair("width", std::to_string(ui->spinBox_width->value())));
+            props.insert(std::make_pair("height", std::to_string(ui->spinBox_height->value())));
+            props.insert(std::make_pair("offsetX", std::to_string(ui->spinBox_offsetx->value())));
+            props.insert(std::make_pair("offsetY", std::to_string(ui->spinBox_offsety->value())));
+            props.insert(std::make_pair("format", ui->comboBox_3->currentText().toStdString()));
+            props.insert(std::make_pair("autoWB", ui->comboBox->currentText().toStdString()));
+        //    props.insert(std::make_pair("autoExpo", ui->comboBox_2->currentText().toStdString()));
+            QString str;
+            m_capture->get_stringproperty("camid", str);
+            std::map<std::string, std::string> camInfo;
+            camInfo.insert(std::make_pair("serialNo", str.toStdString()));
+            p.setPropValues(props);
+            p.setCameraInfo(camInfo);
+            p.save(savepath.toStdString());
     }
-    std::map<std::string, std::string> props;
-    props.insert(std::make_pair("exposure", ui->lineEdit_exposure->text().toStdString()));
-    props.insert(std::make_pair("gainRaw", ui->lineEdit_gainRaw->text().toStdString()));
-    props.insert(std::make_pair("gainRed", ui->lineEdit_gainRed->text().toStdString()));
-//    props.insert(std::make_pair("gainGreen", std::to_string(ui->SpinBox_gainGreen->value())));
-    props.insert(std::make_pair("gainBlue", ui->lineEdit_gainBlue->text().toStdString()));
-    props.insert(std::make_pair("gamma", ui->lineEdit_gamma->text().toStdString()));
-    props.insert(std::make_pair("width", std::to_string(ui->spinBox_width->value())));
-    props.insert(std::make_pair("height", std::to_string(ui->spinBox_height->value())));
-    props.insert(std::make_pair("offsetX", std::to_string(ui->spinBox_offsetx->value())));
-    props.insert(std::make_pair("offsetY", std::to_string(ui->spinBox_offsety->value())));
-    props.insert(std::make_pair("format", ui->comboBox_3->currentText().toStdString()));
-    props.insert(std::make_pair("autoWB", ui->comboBox->currentText().toStdString()));
-//    props.insert(std::make_pair("autoExpo", ui->comboBox_2->currentText().toStdString()));
-    p.setPropValues(props);
-    p.save(savepath.toStdString());
 }
 
 void MainWindow::getPropValueFloat()
@@ -438,11 +445,12 @@ void MainWindow::updateImage()
                 // RGB Mono,,,,,
                 if(m_capture->m_format=="rgb"){
                     color = cv::COLOR_RGB2BGR;
-                    color = cv::COLOR_GRAY2BGR;
+//                    color = cv::COLOR_GRAY2BGR;
                 }
                 }else if(m_capture->m_format=="UYVY"){
                     color = cv::COLOR_YUV2RGB_UYVY;
                 }else if (m_capture->m_format=="GRAY8"){
+                    color = cv::COLOR_GRAY2BGR;
             }
 //            qDebug() << "color: " << color;
             try{
