@@ -9,7 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_capture = nullptr;
 
     ui->setupUi(this);
-    this->setWindowTitle("CamApp for TOSHIBA Teli BU1203MC Version 0.0.1");
+    this->setWindowTitle("CamApp for TOSHIBA Teli BU1203MC Version 0.0.2");
+    this->setFixedSize(1056, 572);
     ui->comboBox->setEnabled(true);
     ui->comboBox->addItem("Off");
     ui->comboBox->addItem("Once");
@@ -28,8 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->horizontalSlider_exposure->setMaximum(EXPO_MAX*100);
     ui->horizontalSlider_exposure->setMinimum(EXPO_MIN*100);
     ui->horizontalSlider_exposure->setValue((int)(EXPO_DEF*100));
-    ui->horizontalSlider_exposure->setSingleStep(20000);
-    ui->horizontalSlider_exposure->setPageStep(100000);
+//    ui->horizontalSlider_exposure->setSingleStep(20000);
+//    ui->horizontalSlider_exposure->setPageStep(100000);
     ui->lineEdit_exposure->setText(QString::number(EXPO_DEF));
 
     ui->horizontalSlider_gamma->setRange((int)(GAMMA_MIN*100),(int)(GAMMA_MAX*100));
@@ -69,7 +70,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->spinBox_offsety->setMinimum(0);
     /*DoubleSpinBox*/
 
-
+    //
+//    QDoubleValidator *doubleValidator = new QDoubleValidator(GAIN_MIN, GAIN_MAX, 1000);
+//    ui->lineEdit_exposure->setValidator(new QDoubleValidator(EXPO_MIN, EXPO_MAX, 1000));
+//    ui->lineEdit_gamma->setValidator(new QDoubleValidator(GAMMA_MIN, GAMMA_MAX, 1000));
+//    ui->lineEdit_gainRaw->setValidator(doubleValidator);
+//    ui->lineEdit_gainRed->setValidator(new QDoubleValidator(WBR_MIN, WBR_MAX, 1000));
+//    ui->lineEdit_gainBlue->setValidator(new QDoubleValidator(WBB_MIN, WBB_MAX, 1000));
     //lineEdit
     list_lineedit << ui->lineEdit_exposure;
     list_lineedit << ui->lineEdit_gamma;
@@ -80,9 +87,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     for(auto const &lineedit : list_lineedit)
     {
-        QDoubleValidator *doubleValidator = new QDoubleValidator();
-//        ui->lineEdit_exposure->setValidator(doubleValidator);
-        lineedit->setValidator(doubleValidator);
+//        QDoubleValidator *doubleValidator = new QDoubleValidator();
+////        ui->lineEdit_exposure->setValidator(doubleValidator);
+//        lineedit->setValidator(doubleValidator);
         connect(lineedit, &QLineEdit::textChanged, this, &MainWindow::doubleSetProperty);
 
     }
@@ -120,11 +127,17 @@ MainWindow::MainWindow(QWidget *parent) :
                 p.getPropValues(props);
 //                std::cout<< "debug   expo:" <<std::stod(props.at("exposure")) << std::endl;
                 ui->lineEdit_exposure->setText(QString::fromStdString(props.at("exposure")));
+                ui->horizontalSlider_exposure->setValue((int)(std::stof(props.at("exposure"))*100));
                 ui->lineEdit_gainRed->setText(QString::fromStdString(props.at("gainRed")));
+                ui->horizontalSlider_gainRed->setValue((int)(std::stof(props.at("gainRed"))*100));
+
 ////                ui->SpinBox_gainGreen->setValue(std::stod(props.at("gainGreen")));
                 ui->lineEdit_gainBlue->setText(QString::fromStdString(props.at("gainBlue")));
+                ui->horizontalSlider_gainBlue->setValue((int)(std::stof(props.at("gainBlue"))*100));
                 ui->lineEdit_gainRaw->setText(QString::fromStdString(props.at("gainRaw")));
+                ui->horizontalSlider_gainRaw->setValue((int)(std::stof(props.at("gainRaw"))*100));
                 ui->lineEdit_gamma->setText(QString::fromStdString(props.at("gamma")));
+                ui->horizontalSlider_gamma->setValue((int)(std::stof(props.at("gamma"))*100));
 
                 int idx = ui->comboBox_3->findText(QString::fromStdString(props.at("format")));
                 if (idx == -1){
@@ -145,6 +158,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_capture = new capture(savepath, this);
 
     connect(ui->pushButton, &QPushButton::clicked, this, &MainWindow::close);
+    connect(ui->horizontalSlider_exposure, &QSlider::sliderReleased, this, &MainWindow::getPropValueFloat);
 
     // get camera prop(const)
     getPropValueInt();
@@ -280,7 +294,6 @@ void MainWindow::doubleSetProperty()
         m_capture->change_property("gainBlue", lineEdit->text().toDouble());
     }
 
-    this->getPropValueFloat();
 //    if (m_capture!=nullptr){
 //        m_capture->change_property(controlName, spinbox->value());
 //    }
@@ -384,6 +397,7 @@ void MainWindow::getPropValueFloat()
 
     m_capture->get_floatproperty("exposure", value);
     ui->lineEdit_exposure->setText(QString::number(value, 'f', 3));
+    qDebug() << "getvalue" << value;
 
     m_capture->get_floatproperty("gainRaw", value);
     ui->lineEdit_gainRaw->setText(QString::number(value, 'f', 3));
@@ -478,3 +492,4 @@ void MainWindow::updateImage()
         }
     }
 }
+

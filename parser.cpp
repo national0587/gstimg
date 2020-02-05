@@ -18,10 +18,11 @@ int parser::read(const std::string path) {
         if (!parsingSuccessful) {
             std::cout << reader.getFormatedErrorMessages()
                       << "\n";
+            return false;
         }
         alive = false;
     }
-    return 0;
+    return true;
 }
 
 int parser::getPropValue(std::string prop, std::string &value) {
@@ -34,14 +35,14 @@ int parser::getPropValue(std::string prop, std::string &value) {
                 for(auto itr2=proplist.begin(); itr2!=proplist.end();++itr2){
                     if(*itr2==prop){
                         value = propv[prop].get("value", "UTF-8").asString();
-                        return 0;
+                        return true;
 
                     }
                 }
             }
         }
     }
-    return -1;
+    return false;
 }
 int parser::getPropValues(std::map<std::string, std::string> &values) {
     if(root.type()==Json::objectValue){
@@ -55,11 +56,11 @@ int parser::getPropValues(std::map<std::string, std::string> &values) {
                     values.insert(std::make_pair(*itr2, value));
 
                 }
-            return 0;
+            return true;
             }
         }
     }
-    return -1;
+    return false;
 }
 
 int parser::setPropValue(std::string prop, std::string value) {
@@ -92,7 +93,7 @@ int parser::setPropValues(std::map<std::string, std::string> &values) {
 //        std::cout << x.first << std::endl;
     }
 
-    return 0;
+    return true;
 }
 
 int parser::setCameraInfo(std::map<std::string, std::string> &value){
@@ -105,7 +106,7 @@ int parser::setCameraInfo(std::map<std::string, std::string> &value){
     root["camera_info"]["serialNo"] = value["serialNo"];
     root["camera_info"]["manufacturer"] = "Toshiba-Teli";
     root["plugin_info"]["name"] = "telibu1203mcsrc";
-    root["plugin_info"]["version"] = "0.0.1";
+    root["plugin_info"]["version"] = "0.0.2";
 }
 
 int parser::save(const std::string path) {
@@ -114,6 +115,6 @@ int parser::save(const std::string path) {
     Json::StyledWriter styledWriter;
     jsonfile << styledWriter.write(root) ;
     jsonfile.close();
-    return 0;
+    return true;
 }
 

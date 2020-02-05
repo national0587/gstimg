@@ -15,7 +15,7 @@
 #include <QMessageBox>
 #include "parser.h"
 
-#define EXPO_MIN 42
+#define EXPO_MIN 45
 #define EXPO_MAX 1000000
 #define EXPO_DEF 33000
 
