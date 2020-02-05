@@ -241,13 +241,6 @@
                 </property>
                </widget>
               </item>
-              <item row="5" column="2">
-               <widget class="QComboBox" name="comboBox">
-                <property name="acceptDrops">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="4">
                <widget class="QLabel" name="label">
                 <property name="text">
@@ -276,6 +269,13 @@
                 </property>
                </widget>
               </item>
+              <item row="5" column="2">
+               <widget class="QComboBox" name="comboBox">
+                <property name="acceptDrops">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
              </layout>
             </item>
             <item row="1" column="0">
@@ -297,107 +297,114 @@
            <attribute name="title">
             <string>Format</string>
            </attribute>
-           <widget class="QWidget" name="gridLayoutWidget_2">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>10</y>
-              <width>321</width>
-              <height>171</height>
-             </rect>
-            </property>
-            <layout class="QGridLayout" name="gridLayout">
-             <item row="3" column="0">
-              <widget class="QLabel" name="label_offsety">
-               <property name="text">
-                <string>offsetY</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_height">
-               <property name="text">
-                <string>height</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2">
-              <widget class="QSpinBox" name="spinBox_width">
-               <property name="maximum">
-                <number>999996</number>
-               </property>
-               <property name="singleStep">
-                <number>8</number>
-               </property>
-               <property name="value">
-                <number>4000</number>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="2">
-              <widget class="QSpinBox" name="spinBox_offsety">
-               <property name="maximum">
-                <number>999999</number>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_width">
-               <property name="text">
-                <string>width</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_offsetx">
-               <property name="text">
-                <string>offsetX</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2">
-              <widget class="QSpinBox" name="spinBox_offsetx">
-               <property name="maximum">
-                <number>999999</number>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2">
-              <widget class="QSpinBox" name="spinBox_height">
-               <property name="maximum">
-                <number>999999</number>
-               </property>
-               <property name="singleStep">
-                <number>2</number>
-               </property>
-               <property name="value">
-                <number>3000</number>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="label_format">
-               <property name="text">
-                <string>Format</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
-              <widget class="QComboBox" name="comboBox_3">
-               <item>
+           <layout class="QGridLayout" name="gridLayout_4">
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_offsety">
                 <property name="text">
-                 <string>BayerGR8</string>
+                 <string>offsetY</string>
                 </property>
-               </item>
-               <item>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_height">
                 <property name="text">
-                 <string>Mono8</string>
+                 <string>height</string>
                 </property>
-               </item>
-              </widget>
-             </item>
-            </layout>
-           </widget>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QSpinBox" name="spinBox_width">
+                <property name="maximum">
+                 <number>999996</number>
+                </property>
+                <property name="singleStep">
+                 <number>8</number>
+                </property>
+                <property name="value">
+                 <number>4000</number>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QSpinBox" name="spinBox_offsety">
+                <property name="maximum">
+                 <number>999999</number>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_width">
+                <property name="text">
+                 <string>width</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_offsetx">
+                <property name="text">
+                 <string>offsetX</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QSpinBox" name="spinBox_offsetx">
+                <property name="maximum">
+                 <number>999999</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QSpinBox" name="spinBox_height">
+                <property name="maximum">
+                 <number>999999</number>
+                </property>
+                <property name="singleStep">
+                 <number>2</number>
+                </property>
+                <property name="value">
+                 <number>3000</number>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_format">
+                <property name="text">
+                 <string>Format</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="2">
+               <widget class="QComboBox" name="comboBox_3">
+                <item>
+                 <property name="text">
+                  <string>BayerGR8</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Mono8</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </widget>
          </widget>
         </item>
