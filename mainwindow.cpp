@@ -18,7 +18,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     ui->spinBox_width->setMaximum(4000);
+    ui->spinBox_width->setMinimum(64);
     ui->spinBox_height->setMaximum(3000);
+    ui->spinBox_height->setMinimum(64);
     ui->spinBox_offsetx->setMaximum(4000);
     ui->spinBox_offsety->setMaximum(3000);
 
