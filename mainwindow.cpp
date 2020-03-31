@@ -9,12 +9,19 @@ MainWindow::MainWindow(QWidget *parent) :
     m_capture = nullptr;
 
     ui->setupUi(this);
-    this->setWindowTitle("CamApp for TOSHIBA Teli BU1203MC Version 0.0.2");
+    this->setWindowTitle("CamApp for TOSHIBA Teli BU1203MC Version 0.0.3");     // 2020/03/27 version 0.0.2 -> 0.0.3
     this->setFixedSize(1056, 572);
     ui->comboBox->setEnabled(true);
     ui->comboBox->addItem("Off");
     ui->comboBox->addItem("Once");
     ui->radioButton_scale->setChecked(true);
+#if 1   // 2020/03/27 画面の中央にアプリ表示
+    QDesktopWidget *desktop = QApplication::desktop();
+    QRect rect = desktop->screenGeometry();
+    int32_t w = this->geometry().width();
+    int32_t h = this->geometry().height();
+    this->setGeometry( (rect.width() - w) / 2, (rect.height() - h)/ 2, rect.width(), rect.height() );
+#endif
 
 
     ui->spinBox_width->setMaximum(4000);
@@ -227,6 +234,7 @@ void MainWindow::on_comboBox_currentIndexChanged(const QString &arg1)
     }
 }
 
+#if 0   // 2020/03/27 使っていないボタンを無効化
 void MainWindow::on_comboBox_2_currentIndexChanged(const QString &arg1)
 {
     if(m_capture!=nullptr){
@@ -241,6 +249,7 @@ void MainWindow::on_comboBox_2_currentIndexChanged(const QString &arg1)
         }
     }
 }
+#endif
 
 
 
@@ -332,11 +341,13 @@ void MainWindow::slidebar_event()
 
 void MainWindow::on_pushButton_clicked()
 {
+
     if (m_capture!=nullptr){
         m_capture->event_bringup();
     }
 }
 
+#if 0   // 2020/03/27 使っていないボタンを無効化
 void MainWindow::on_pushButton_2_clicked()
 {
     if (m_capture!=nullptr){
@@ -358,12 +369,14 @@ void MainWindow::on_pushButton_4_clicked()
         m_capture->setStatePause();
     }
 }
+#endif
 
 void MainWindow::on_pushButton_5_clicked()
 {
 //    const QPixmap pixmap = ui->graphicsView->grab();
 //    pixmap.save("out.png");
         if(m_capture!=nullptr){
+
         if (savepath==""){
             savepath = QFileDialog::getSaveFileName(this, tr("save path"), "");
         }else{
@@ -390,6 +403,13 @@ void MainWindow::on_pushButton_5_clicked()
             p.setPropValues(props);
             p.setCameraInfo(camInfo);
             p.save(savepath.toStdString());
+
+#if 1   // 2020/03/27 アプリ終了 @Okano
+            if (m_capture!=nullptr){
+                m_capture->event_bringup();
+            }
+            close();
+#endif
     }
 }
 

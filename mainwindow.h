@@ -13,6 +13,7 @@
 #include <QSlider>
 #include <QValidator>
 #include <QMessageBox>
+#include <QDesktopWidget>
 #include "parser.h"
 
 #define EXPO_MIN 45
@@ -54,15 +55,19 @@ protected:
 private slots:
     void on_comboBox_currentIndexChanged(const QString &arg1);
 
+#if 0   // 2020/03/27 使っていないボタンを無効化
     void on_comboBox_2_currentIndexChanged(const QString &arg1);
+#endif
 
     void doubleSetProperty();
     void slidebar_event();
 
     void on_pushButton_clicked();
+#if 0   // 2020/03/27 使っていないボタンを無効化
     void on_pushButton_2_clicked();
     void on_pushButton_3_clicked();
     void on_pushButton_4_clicked();
+#endif
     void on_pushButton_5_clicked();
     void getPropValueFloat();
     void getPropValueInt();
