@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/new/prefix1">
+        <file>res/Image_Fit.png</file>
+        <file>res/OneShot_ToF.png</file>
+        <file>res/Recording.png</file>
+        <file>res/RecordingStop.png</file>
+        <file>res/SavePng.png</file>
+        <file>res/Start.png</file>
+        <file>res/Stop.png</file>
+    </qresource>
+</RCC>
