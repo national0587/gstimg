@@ -75,16 +75,17 @@ int parser::newTree() {
     return 0;
 }
 
-int parser::setPropValues(std::map<std::string, std::string> &values) {
+int parser::setPropValues(std::map<std::string, std::string> &values, std::string cameraModel, std::string serial)
+{
 //    Json::Value root;
     root.clear();
 
     root["file_type"] = "ttc_camera_plugin_setting";
-    root["file_version"] = "1.0.0";
-    root["camera_info"]["name"] = "DH-MV-A5501CG20E";
-    root["camera_info"]["ID"] = "0001";
+    root["file_version"] = "0.2.0";
+    root["camera_info"]["name"] = cameraModel;
+    root["camera_info"]["ID"] = serial;
     root["plugin_info"]["name"] = "dahuasrc";
-    root["plugin_info"]["version"] = "1.0.0";
+    root["plugin_info"]["version"] = "0.2.0";
 
     for(auto x: values){
         root["property_list"][x.first]["value"] = x.second;
@@ -101,5 +102,25 @@ int parser::save(const std::string path) {
     jsonfile << styledWriter.write(root) ;
     jsonfile.close();
     return 0;
+}
+
+int parser::getCameraInfo(std::map<std::string, std::string> &values) {
+    if(root.type()==Json::objectValue){
+        std::vector<std::string> rootlist = root.getMemberNames();
+        for(auto itr = rootlist.begin(); itr!=rootlist.end(); ++itr){
+            if (*itr=="camera_info"){
+                Json::Value propv = root[*itr];
+                std::vector<std::string> proplist = propv.getMemberNames();
+                for(auto itr2=proplist.begin(); itr2!=proplist.end();++itr2){
+//                    std::string value = propv[*itr2].get("value", "UTF-8").asString();
+                    std::string value = propv[*itr2].asString();
+                    values.insert(std::make_pair(*itr2, value));
+
+                }
+                return 0;
+            }
+        }
+    }
+    return -1;
 }
 
