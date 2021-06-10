@@ -4,157 +4,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
+  , cap(new GstCapture())
+  , thCap(new QThread())
 {
-    int     width = 0;
-    int     height = 0;
-    int     x = 0;
-    int     y = 0;
-    double  exp = 0;
-    double  gainR = 0;
-    double  gainG = 0;
-    double  gainB = 0;
-    double  gainRaw = 0;
-    double  gamma = 0;
-    QString format;
-    bool    confFileReadFlg = false;
-
-    m_capture = nullptr;
-    m_camPluginSettingFlg = false;
-    m_captureStartFlg = false;
-
-    ui->setupUi(this);
-
-    // 引数を取得
-    getArgments();
-
-    // カメラ型番選択（設定ファイル指定済みの場合は不要）
-    CameraSelectDialog camDlg;
-    if( m_savepath.isEmpty() == true ){
-        // 引数-fなし
-        if( m_camModel.isEmpty() == true ){
-            // 引数-mなし
-            if( camDlg.exec() == QDialog::Accepted ){
-                // OKボタン押下
-                m_camModel = camDlg.m_camModel;
-            }else{
-                // Cancelボタン押下 : アプリ終了
-                close();
-                exit(0);
-            }
-        }
-    }else{
-        // 引数-fあり：設定ファイルから各パラメーターを取得
-        const std::string str = m_savepath.toStdString();
-        ui->statusBar->showMessage(m_savepath);
-        if (QFile::exists(m_savepath)){
-            p.read(str);
-            std::map<std::string, std::string> props;
-            if( p.getPropValues(props) == 0 ){
-                exp = std::stod(props.at("exposure"));
-                gainR = std::stod(props.at("gainRed"));
-                gainG = std::stod(props.at("gainGreen"));
-                gainB = std::stod(props.at("gainBlue"));
-                gainRaw = std::stod(props.at("gainRaw"));
-                gamma = std::stod(props.at("gamma"));
-                format = QString::fromStdString(props.at("format"));
-                width = std::stoi(props.at("width"));
-                height = std::stoi(props.at("height"));
-                x = std::stoi(props.at("offsetX"));
-                y = std::stoi(props.at("offsetY"));
-                confFileReadFlg = true;
-
-                std::map<std::string, std::string> camInfo;
-                if( p.getCameraInfo(camInfo) == 0 ){
-                    std::string localstr = camInfo["name"];
-                    m_camModel = QString(localstr.c_str());
-                }
-            }else{
-                // 設定ファイルを読めない
-                m_savepath.clear();
-                if( camDlg.exec() == QDialog::Accepted ){
-                    // OKボタン押下
-                    m_camModel = camDlg.m_camModel;
-                }else{
-                    // Cancelボタン押下 : アプリ終了
-                    close();
-                    exit(0);
-                }
-            }
-        }else{
-            // no file!
-            m_savepath.clear();
-            if( camDlg.exec() == QDialog::Accepted ){
-                // OKボタン押下
-                m_camModel = camDlg.m_camModel;
-            }else{
-                // Cancelボタン押下 : アプリ終了
-                close();
-                exit(0);
-            }
-        }
-    }
-
-    // 画面の中央にメイン画面表示
-    QDesktopWidget *desktop = QApplication::desktop();
-    QRect rect = desktop->screenGeometry();
-    int32_t w = this->geometry().width();
-    int32_t h = this->geometry().height();
-    this->setGeometry( (rect.width() - w) / 2, (rect.height() - h)/ 2, w, h );
-    QString mainWinTitle = QString("Camapp_Dahua %1").arg(m_camModel); // 選択されたカメラ型番をタイトルに追加
-    this->setWindowTitle(mainWinTitle);
-    ui->graphicsView->setScene(&scene_);
-
-    // 非表示
-    ui->label_Recording_time->hide();
-
-    connect(ui->pushButton_conf_cancel, &QPushButton::clicked, this, &MainWindow::close);
-
-    // メイン画面GUI初期設定
-    initCameraPluginGui();
-
-    // 設定ファイルの内容をメイン画面に反映
-    if( confFileReadFlg ){
-        ui->SpinBox_exposure->setValue(exp);
-        ui->SpinBox_gainRed->setValue(gainR);
-        ui->SpinBox_gainGreen->setValue(gainG);
-        ui->SpinBox_gainBlue->setValue(gainB);
-        ui->SpinBox_gainRaw->setValue(gainRaw);
-        ui->SpinBox_gamma->setValue(gamma);
-
-        int idx = ui->comboBox_Format->findText(format);
-        if (idx == -1){
-            ui->comboBox_Format->addItem(format);
-            ui->comboBox_Format->setCurrentText(format);
-        }else{
-            ui->comboBox_Format->setCurrentIndex(idx);
-        }
-
-        ui->spinBox_width->setValue(width);
-        ui->spinBox_height->setValue(height);
-        ui->spinBox_offsetX->setValue(x);
-        ui->spinBox_offsetY->setValue(y);
-    }
-
-    // カメラ制御クラス作成 & カメラプラグイン設定
-    m_capture = new capture(m_savepath, this);
-    connect( m_capture, SIGNAL(errorMsgSend(QString)), this, SLOT(errorMsgBox(QString)) );
-    m_camPluginSettingFlg = m_capture->cameraPluginSetting();
-    if( m_camPluginSettingFlg == false ){
-        // カメラプラグイン設定失敗　アプリ終了
-        exit(0);
-    }
-
-    // Capture start
-    if( m_camPluginSettingFlg ){
-        ui->actionCaptureStart->setChecked(true);
-        on_actionCaptureStart_triggered();
-    }
-
-    // Update toolbar
-    updateToolbarButton();
-
-    // Update camera plugin gui setting
-    updateCameraPluginParam();
 }
 
 MainWindow::~MainWindow()
@@ -227,6 +79,9 @@ void MainWindow::updateImage()
 
 void MainWindow::fitResize()
 {
+//    if(scene_ == nullptr){
+//        return;
+//    }
     // 画像描画領域のサイズに合わせて描画画像をリサイズする
     ui->graphicsView->fitInView(scene_.sceneRect(), Qt::KeepAspectRatio);
 }
@@ -1067,6 +922,161 @@ void MainWindow::updateStatus()
 
     str += recStr + recTimeStr;
     ui->label_Recording_time->setText(str);
+
+}
+
+void MainWindow::initialize()
+{
+    int     width = 0;
+    int     height = 0;
+    int     x = 0;
+    int     y = 0;
+    double  exp = 0;
+    double  gainR = 0;
+    double  gainG = 0;
+    double  gainB = 0;
+    double  gainRaw = 0;
+    double  gamma = 0;
+    QString format;
+    bool    confFileReadFlg = false;
+
+    m_capture = nullptr;
+    m_camPluginSettingFlg = false;
+    m_captureStartFlg = false;
+
+    ui->setupUi(this);
+
+    // 引数を取得
+    getArgments();
+
+    // カメラ型番選択（設定ファイル指定済みの場合は不要）
+    CameraSelectDialog camDlg;
+    if( m_savepath.isEmpty() == true ){
+        // 引数-fなし
+        if( m_camModel.isEmpty() == true ){
+            // 引数-mなし
+            if( camDlg.exec() == QDialog::Accepted ){
+                // OKボタン押下
+                m_camModel = camDlg.m_camModel;
+            }else{
+                // Cancelボタン押下 : アプリ終了
+                close();
+                exit(0);
+            }
+        }
+    }else{
+        // 引数-fあり：設定ファイルから各パラメーターを取得
+        const std::string str = m_savepath.toStdString();
+        ui->statusBar->showMessage(m_savepath);
+        if (QFile::exists(m_savepath)){
+            p.read(str);
+            std::map<std::string, std::string> props;
+            if( p.getPropValues(props) == 0 ){
+                exp = std::stod(props.at("exposure"));
+                gainR = std::stod(props.at("gainRed"));
+                gainG = std::stod(props.at("gainGreen"));
+                gainB = std::stod(props.at("gainBlue"));
+                gainRaw = std::stod(props.at("gainRaw"));
+                gamma = std::stod(props.at("gamma"));
+                format = QString::fromStdString(props.at("format"));
+                width = std::stoi(props.at("width"));
+                height = std::stoi(props.at("height"));
+                x = std::stoi(props.at("offsetX"));
+                y = std::stoi(props.at("offsetY"));
+                confFileReadFlg = true;
+
+                std::map<std::string, std::string> camInfo;
+                if( p.getCameraInfo(camInfo) == 0 ){
+                    std::string localstr = camInfo["name"];
+                    m_camModel = QString(localstr.c_str());
+                }
+            }else{
+                // 設定ファイルを読めない
+                m_savepath.clear();
+                if( camDlg.exec() == QDialog::Accepted ){
+                    // OKボタン押下
+                    m_camModel = camDlg.m_camModel;
+                }else{
+                    // Cancelボタン押下 : アプリ終了
+                    close();
+                    exit(0);
+                }
+            }
+        }else{
+            // no file!
+            m_savepath.clear();
+            if( camDlg.exec() == QDialog::Accepted ){
+                // OKボタン押下
+                m_camModel = camDlg.m_camModel;
+            }else{
+                // Cancelボタン押下 : アプリ終了
+                close();
+                exit(0);
+            }
+        }
+    }
+
+    // 画面の中央にメイン画面表示
+    QDesktopWidget *desktop = QApplication::desktop();
+    QRect rect = desktop->screenGeometry();
+    int32_t w = this->geometry().width();
+    int32_t h = this->geometry().height();
+    this->setGeometry( (rect.width() - w) / 2, (rect.height() - h)/ 2, w, h );
+    QString mainWinTitle = QString("Camapp_Dahua %1").arg(m_camModel); // 選択されたカメラ型番をタイトルに追加
+    this->setWindowTitle(mainWinTitle);
+    ui->graphicsView->setScene(&scene_);
+
+    // 非表示
+    ui->label_Recording_time->hide();
+
+    connect(ui->pushButton_conf_cancel, &QPushButton::clicked, this, &MainWindow::close);
+
+    // メイン画面GUI初期設定
+    initCameraPluginGui();
+
+    // 設定ファイルの内容をメイン画面に反映
+    if( confFileReadFlg ){
+        ui->SpinBox_exposure->setValue(exp);
+        ui->SpinBox_gainRed->setValue(gainR);
+        ui->SpinBox_gainGreen->setValue(gainG);
+        ui->SpinBox_gainBlue->setValue(gainB);
+        ui->SpinBox_gainRaw->setValue(gainRaw);
+        ui->SpinBox_gamma->setValue(gamma);
+
+        int idx = ui->comboBox_Format->findText(format);
+        if (idx == -1){
+            ui->comboBox_Format->addItem(format);
+            ui->comboBox_Format->setCurrentText(format);
+        }else{
+            ui->comboBox_Format->setCurrentIndex(idx);
+        }
+
+        ui->spinBox_width->setValue(width);
+        ui->spinBox_height->setValue(height);
+        ui->spinBox_offsetX->setValue(x);
+        ui->spinBox_offsetY->setValue(y);
+    }
+
+    // カメラ制御クラス作成 & カメラプラグイン設定
+    m_capture = new capture(m_savepath, this);
+    connect( m_capture, SIGNAL(errorMsgSend(QString)), this, SLOT(errorMsgBox(QString)) );
+    m_camPluginSettingFlg = m_capture->cameraPluginSetting();
+    if( m_camPluginSettingFlg == false ){
+        // カメラプラグイン設定失敗　アプリ終了
+        exit(0);
+    }
+
+    // Capture start
+    if( m_camPluginSettingFlg ){
+        ui->actionCaptureStart->setChecked(true);
+        on_actionCaptureStart_triggered();
+    }
+
+    // Update toolbar
+    updateToolbarButton();
+
+    // Update camera plugin gui setting
+    updateCameraPluginParam();
 
 }
 

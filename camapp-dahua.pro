@@ -31,7 +31,8 @@ SOURCES += \
     capture.cpp \
     parser.cpp \
     cameraselectdialog.cpp \
-    Record.cpp
+    Record.cpp \
+    gstcapture.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     parser.h \
     cameraselectdialog.h \
     cameraModel.h \
-    Record.h
+    Record.h \
+    gstcapture.h
 
 FORMS += \
         mainwindow.ui \

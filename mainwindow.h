@@ -18,6 +18,7 @@
 #include "cameraselectdialog.h" // & "cameraModel.h"
 #include "Record.h"
 #include "parser.h"
+#include "gstcapture.h"
 
 // プロパティ名
 #define DEF_CAMPL_EXPOSUR           "exposure"
@@ -122,9 +123,12 @@ private:
 
     // CameraPlugin
     capture* m_capture;
+    GstCapture *cap;
+    QThread *thCap;
     bool m_camPluginSettingFlg; // true:プラグイン設定OK , false:設定NG
     bool m_imageSizeFit;    // true:Fit on , false:Fit off
 
+    void initialize();
     void initCameraPluginGui();
     void updateCameraPluginParam();
 
