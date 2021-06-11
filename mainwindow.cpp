@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
   , cap(new GstCapture())
   , thCap(new QThread())
 {
+    initialize();
 }
 
 MainWindow::~MainWindow()
@@ -18,7 +19,7 @@ void MainWindow::resizeEvent(QResizeEvent * event)
 {
     if( m_imageSizeFit ){
         // Fit On:画像描画領域に画像をフィットさせる
-        fitResize();
+//        fitResize();
     }
 }
 
@@ -79,9 +80,7 @@ void MainWindow::updateImage()
 
 void MainWindow::fitResize()
 {
-//    if(scene_ == nullptr){
-//        return;
-//    }
+
     // 画像描画領域のサイズに合わせて描画画像をリサイズする
     ui->graphicsView->fitInView(scene_.sceneRect(), Qt::KeepAspectRatio);
 }
@@ -927,6 +926,13 @@ void MainWindow::updateStatus()
 
 void MainWindow::initialize()
 {
+    cap->moveToThread(thCap);
+    thCap->start();
+
+    // カメラリストの取得
+
+    qDebug() << cap->getCameraList();
+
     int     width = 0;
     int     height = 0;
     int     x = 0;

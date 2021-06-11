@@ -54,7 +54,7 @@ INCLUDEPATH += \
     /usr/include/jsoncpp \
     /usr/lib/i386-linux-gnu/glib-2.0/include
 unix: CONFIG += link_pkgconfig
-unix: PKGCONFIG += gstreamer-1.0 gstreamer-app-1.0 gstreamer-plugins-base-1.0 opencv jsoncpp
+unix: PKGCONFIG += gstreamer-1.0 gstreamer-app-1.0 gstreamer-plugins-base-1.0 opencv4 jsoncpp
 
 DISTFILES += \
     README.md
